@@ -12,26 +12,13 @@
         }
         table {
             margin-top: 20px;
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-        th {
-            background-color: #f2f2f2;
-            text-align: left;
-        }
-        tr:hover {
-            background-color: #f5f5f5;
         }
     </style>
 </head>
 <body>
     <h1>Singapore 2-Hour Weather Forecast</h1>
     <p id="update-time"></p>
-    <table class="table table-bordered table-striped table-hover">
+    <table class="table table-bordered table-striped">
         <thead>
             <tr>
                 <th>Area</th>
@@ -47,38 +34,27 @@
         document.addEventListener("DOMContentLoaded", function() {
             const apiUrl = "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast";
             fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    if (data.items && data.items.length > 0) {
-                        const forecasts = data.items[0].forecasts;
-                        const updateTime = data.items[0].update_timestamp;
-                        const tableBody = document.getElementById('weather-table');
-                        const updateTimeElement = document.getElementById('update-time');
+                    const forecasts = data.items[0].forecasts;
+                    const updateTime = data.items[0].update_timestamp;
+                    const tableBody = document.getElementById('weather-table');
+                    const updateTimeElement = document.getElementById('update-time');
 
-                        // Format and display update time
-                        updateTimeElement.textContent = `Last Updated: ${new Date(updateTime).toLocaleString()}`;
-                        
-                        // Populate table with weather data
-                        forecasts.forEach(forecast => {
-                            const row = document.createElement('tr');
-                            const areaCell = document.createElement('td');
-                            const forecastCell = document.createElement('td');
+                    updateTimeElement.textContent = `Last Updated: ${new Date(updateTime).toLocaleString()}`;
+                    
+                    forecasts.forEach(forecast => {
+                        const row = document.createElement('tr');
+                        const areaCell = document.createElement('td');
+                        const forecastCell = document.createElement('td');
 
-                            areaCell.textContent = forecast.area;
-                            forecastCell.textContent = forecast.forecast;
+                        areaCell.textContent = forecast.area;
+                        forecastCell.textContent = forecast.forecast;
 
-                            row.appendChild(areaCell);
-                            row.appendChild(forecastCell);
-                            tableBody.appendChild(row);
-                        });
-                    } else {
-                        console.error('No forecast data available');
-                    }
+                        row.appendChild(areaCell);
+                        row.appendChild(forecastCell);
+                        tableBody.appendChild(row);
+                    });
                 })
                 .catch(error => {
                     console.error('Error fetching weather data:', error);

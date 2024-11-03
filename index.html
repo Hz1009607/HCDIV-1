@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singapore 2-Hour Weather Forecast</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Singapore 2-Hour Weather Forecast</h1>
+    <p id="update-time"></p>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Area</th>
+                <th>Forecast</th>
+            </tr>
+        </thead>
+        <tbody id="weather-table">
+            <!-- Weather data will be injected here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const apiUrl = "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast";
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const forecasts = data.items[0].forecasts;
+                    const updateTime = data.items[0].update_timestamp;
+                    const tableBody = document.getElementById('weather-table');
+                    const updateTimeElement = document.getElementById('update-time');
+
+                    updateTimeElement.textContent = `Last Updated: ${new Date(updateTime).toLocaleString()}`;
+                    
+                    forecasts.forEach(forecast => {
+                        const row = document.createElement('tr');
+                        const areaCell = document.createElement('td');
+                        const forecastCell = document.createElement('td');
+
+                        areaCell.textContent = forecast.area;
+                        forecastCell.textContent = forecast.forecast;
+
+                        row.appendChild(areaCell);
+                        row.appendChild(forecastCell);
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                });
+        });
+    </script>
+</body>
+</html>
